@@ -1,13 +1,31 @@
 const express = require('express')
 const app = express()
 const port = 3000
+const bodyParser = require('body-parser')
+const {User} = require("./models/User")
+
+const config = require('./config/key')
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://deepbluehw:k3246910@cluster0.r6h4bdc.mongodb.net/?retryWrites=true&w=majority',{
-    useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
+mongoose.connect(config.mongoURI,{
+//    useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(() =>console.log('MongoDB connected'))
     .catch(err => console.log(err))
 
-app.get('/', (req,res) => res.send('Hello World!! ~ HI!!'))
+app.get('/', (req,res) => res.send('Hello World!! ~ I am Jason!! How are you?'))
+
+app.post('/register', (req,res) => {
+
+    //회원 가입할 때 필요한 정보들을 클라이언트에서 가져오면 그것들을 데이터베이스에 넣어준다
+    const user = new User
+
+    user.save((err,userInfo) =>{
+        if(err) return res.json({success:false, err})
+        return res.status(200).json({
+            success:true
+        })
+    })
+
+})
 
 app.listen(port, () => console.log('Example app listening on port ${port}!'))
